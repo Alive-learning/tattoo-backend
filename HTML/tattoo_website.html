@@ -1,0 +1,1342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OM TATTOO SHOP - Booking System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --dark-bg: #131313;
+            --dark-bg-secondary: #1c1b1b;
+            --dark-card: #2a2a2a;
+            --dark-text: #e5e2e1;
+            --accent-warm: #ffb4a8;
+            --accent-coral: #ff5540;
+            --accent-brown: #603e39;
+            --text-secondary: #ebbbb4;
+            --text-muted: #6b7280;
+            --border-color: rgba(96, 62, 57, 0.3);
+            --light-bg: #f5f5f5;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+        }
+
+        html, body {
+            height: 100%;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: var(--dark-bg);
+            color: var(--dark-text);
+        }
+
+        /* ========== HEADER ========== */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            width: 100%;
+            backdrop-filter: blur(6px);
+            background: rgba(10, 10, 10, 0.9);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 1rem 2rem;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-brand {
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            color: white;
+        }
+
+        nav {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #a3a3a3;
+            font-size: 0.875rem;
+            font-weight: 500;
+            letter-spacing: -0.7px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        nav a:hover, nav a.active {
+            color: var(--accent-coral);
+        }
+
+        .btn-primary {
+            background: var(--accent-coral);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            font-size: 0.875rem;
+            font-weight: 700;
+            letter-spacing: 1.2px;
+            text-transform: uppercase;
+            border: none;
+            cursor: pointer;
+            transition: opacity 0.3s;
+        }
+
+        .btn-primary:hover {
+            opacity: 0.9;
+        }
+
+        .admin-btn {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 60px;
+            height: 60px;
+            background: var(--accent-coral);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 999;
+            box-shadow: 0 4px 12px rgba(255, 85, 64, 0.3);
+        }
+
+        /* ========== MAIN CONTAINER ========== */
+        main {
+            margin-top: 76px;
+            min-height: calc(100vh - 76px);
+        }
+
+        .page {
+            display: none;
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* ========== HERO SECTION ========== */
+        .hero {
+            background: var(--dark-bg);
+            background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600"><defs><linearGradient id="g1" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:%23603e39;stop-opacity:0.1" /><stop offset="100%" style="stop-color:%23131313;stop-opacity:0.5" /></linearGradient></defs><rect width="1200" height="600" fill="url(%23g1)"/></svg>');
+            min-height: 500px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 4rem 2rem;
+        }
+
+        .hero-content {
+            max-width: 800px;
+        }
+
+        .hero h1 {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 700;
+            line-height: 1.2;
+            margin-bottom: 1rem;
+        }
+
+        .hero h1 .highlight {
+            color: var(--accent-warm);
+        }
+
+        .hero p {
+            font-size: 1.125rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+        }
+
+        /* ========== SECTIONS ========== */
+        section {
+            padding: 4rem 2rem;
+        }
+
+        .section-container {
+            max-width: 1280px;
+            margin: 0 auto;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .section-header h2 {
+            font-size: clamp(1.75rem, 4vw, 2.5rem);
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .section-header p {
+            color: var(--text-secondary);
+        }
+
+        /* ========== GALLERY ========== */
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .gallery-item {
+            position: relative;
+            aspect-ratio: 1;
+            overflow: hidden;
+            border-radius: 0.25rem;
+            background: var(--dark-card);
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .gallery-item:hover {
+            transform: scale(1.02);
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .gallery-item-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+            padding: 1.5rem;
+            color: white;
+            transform: translateY(20px);
+            transition: transform 0.3s;
+        }
+
+        .gallery-item:hover .gallery-item-overlay {
+            transform: translateY(0);
+        }
+
+        .gallery-label {
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        /* ========== ADMIN MODAL ========== */
+        .admin-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            overflow-y: auto;
+        }
+
+        .admin-modal.active {
+            display: flex;
+        }
+
+        .admin-content {
+            background: var(--dark-card);
+            border: 1px solid var(--accent-brown);
+            max-width: 800px;
+            width: 100%;
+            max-height: 95vh;
+            overflow-y: auto;
+            border-radius: 0.25rem;
+            position: relative;
+        }
+
+        .admin-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            background: var(--dark-card);
+        }
+
+        .admin-header h2 {
+            font-size: 1.5rem;
+            color: var(--dark-text);
+            margin: 0;
+        }
+
+        .admin-close {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1.5rem;
+            cursor: pointer;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .admin-body {
+            padding: 1.5rem;
+        }
+
+        .admin-tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            overflow-x: auto;
+        }
+
+        .admin-tab {
+            padding: 0.75rem 1rem;
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.85rem;
+            border-bottom: 2px solid transparent;
+            margin-bottom: -1px;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+
+        .admin-tab.active {
+            color: var(--accent-coral);
+            border-bottom-color: var(--accent-coral);
+        }
+
+        .admin-section {
+            display: none;
+        }
+
+        .admin-section.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 0.75rem;
+            background: var(--dark-bg);
+            border: 1px solid var(--accent-brown);
+            color: var(--dark-text);
+            font-size: 0.95rem;
+            font-family: inherit;
+            border-radius: 0.25rem;
+            transition: border-color 0.3s;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--accent-warm);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        /* ========== MEDIA UPLOAD ========== */
+        .upload-area {
+            border: 2px dashed var(--accent-brown);
+            border-radius: 0.5rem;
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: rgba(96, 62, 57, 0.1);
+        }
+
+        .upload-area:hover {
+            border-color: var(--accent-warm);
+            background: rgba(255, 180, 168, 0.1);
+        }
+
+        .upload-area.dragover {
+            border-color: var(--accent-warm);
+            background: rgba(255, 180, 168, 0.2);
+        }
+
+        .upload-icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .upload-text {
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .upload-small {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        #file-input {
+            display: none;
+        }
+
+        .image-preview {
+            margin-top: 1rem;
+            position: relative;
+        }
+
+        .image-preview img {
+            max-width: 100%;
+            max-height: 300px;
+            border-radius: 0.25rem;
+            border: 1px solid var(--border-color);
+        }
+
+        .image-preview-remove {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: var(--danger);
+            color: white;
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .category-selector {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .category-option {
+            padding: 1rem;
+            border: 2px solid var(--border-color);
+            border-radius: 0.25rem;
+            background: transparent;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .category-option:hover {
+            border-color: var(--accent-warm);
+        }
+
+        .category-option.selected {
+            background: rgba(255, 180, 168, 0.2);
+            border-color: var(--accent-warm);
+            color: var(--accent-warm);
+        }
+
+        /* ========== MEDIA MANAGEMENT TABLE ========== */
+        .media-list {
+            display: grid;
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .media-card {
+            background: var(--dark-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.25rem;
+            overflow: hidden;
+            display: grid;
+            grid-template-columns: 120px 1fr;
+            gap: 1rem;
+            padding: 1rem;
+        }
+
+        .media-thumbnail {
+            width: 120px;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 0.25rem;
+        }
+
+        .media-info {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .media-name {
+            font-weight: 600;
+            color: var(--dark-text);
+            word-break: break-word;
+        }
+
+        .media-category {
+            font-size: 0.85rem;
+            color: var(--accent-warm);
+            text-transform: uppercase;
+            margin-top: 0.25rem;
+        }
+
+        .media-description {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-top: 0.5rem;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+        }
+
+        .media-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.75rem;
+        }
+
+        .btn-small {
+            padding: 0.5rem 1rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            border-radius: 0.25rem;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+        }
+
+        .btn-edit {
+            background: var(--accent-coral);
+            color: white;
+        }
+
+        .btn-edit:hover {
+            opacity: 0.9;
+        }
+
+        .btn-delete {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-delete:hover {
+            opacity: 0.9;
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-success:hover {
+            opacity: 0.9;
+        }
+
+        /* ========== FOOTER ========== */
+        footer {
+            background: #0a0a0a;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 2rem;
+            text-align: center;
+            margin-top: 3rem;
+        }
+
+        .footer-copyright {
+            color: #737373;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+        }
+
+        /* ========== RESPONSIVE ========== */
+        @media (max-width: 768px) {
+            header {
+                padding: 1rem;
+            }
+
+            nav {
+                display: none;
+            }
+
+            .admin-content {
+                max-width: 95vw;
+            }
+
+            .media-card {
+                grid-template-columns: 1fr;
+            }
+
+            .media-thumbnail {
+                width: 100%;
+                height: 200px;
+            }
+
+            .category-selector {
+                grid-template-columns: 1fr;
+            }
+
+            .admin-tabs {
+                gap: 0.25rem;
+            }
+
+            .admin-tab {
+                padding: 0.5rem 0.75rem;
+                font-size: 0.75rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- HEADER -->
+    <header>
+        <div class="header-brand">OM TATTOO SHOP</div>
+        <nav id="nav-menu">
+            <a href="#" onclick="goToPage('home')" class="nav-link active">HOME</a>
+            <a href="#" onclick="goToPage('booking')" class="nav-link">BOOKING</a>
+            <a href="#" onclick="goToPage('about')" class="nav-link">ABOUT</a>
+        </nav>
+        <button class="btn-primary" onclick="goToPage('booking')">BOOK NOW</button>
+    </header>
+
+    <!-- ADMIN BUTTON -->
+    <button class="admin-btn" onclick="toggleAdmin()">⚙️</button>
+
+    <!-- ADMIN MODAL -->
+    <div class="admin-modal" id="admin-modal">
+        <div class="admin-content">
+            <div class="admin-header">
+                <h2>Admin Panel - Media Management</h2>
+                <button class="admin-close" onclick="toggleAdmin()">✕</button>
+            </div>
+            <div class="admin-body">
+                <div class="admin-tabs">
+                    <button class="admin-tab active" onclick="switchAdminTab(0)">UPLOAD MEDIA</button>
+                    <button class="admin-tab" onclick="switchAdminTab(1)">MANAGE GALLERY</button>
+                    <button class="admin-tab" onclick="switchAdminTab(2)">MANAGE TEAM</button>
+                    <button class="admin-tab" onclick="switchAdminTab(3)">SETTINGS</button>
+                </div>
+
+                <!-- UPLOAD MEDIA TAB -->
+                <div class="admin-section active">
+                    <h3 style="margin-bottom: 1rem; color: var(--dark-text);">Upload New Image</h3>
+                    
+                    <div class="form-group">
+                        <label>Select Category *</label>
+                        <div class="category-selector">
+                            <button class="category-option selected" data-category="tattoo" onclick="selectCategory(this, 'tattoo')">
+                                🎨 TATTOO
+                            </button>
+                            <button class="category-option" data-category="piercing" onclick="selectCategory(this, 'piercing')">
+                                ✨ PIERCING
+                            </button>
+                            <button class="category-option" data-category="team" onclick="selectCategory(this, 'team')">
+                                👥 TEAM
+                            </button>
+                        </div>
+                        <input type="hidden" id="selected-category" value="tattoo">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Upload Image *</label>
+                        <div class="upload-area" onclick="document.getElementById('file-input').click()" 
+                             ondrop="handleDrop(event)" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)">
+                            <div class="upload-icon">📸</div>
+                            <div class="upload-text">Drag and drop your image here or click to browse</div>
+                            <div class="upload-small">Supported formats: JPG, PNG, WebP (Max 5MB)</div>
+                        </div>
+                        <input type="file" id="file-input" accept="image/*" onchange="handleFileSelect(event)">
+                        <div class="image-preview" id="preview-container" style="display: none;">
+                            <img id="preview-image" src="" alt="Preview">
+                            <button class="image-preview-remove" onclick="removePreview()">✕</button>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Image Title (Optional)</label>
+                        <input type="text" id="image-title" placeholder="e.g., Black & Grey Realism">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Description (Optional)</label>
+                        <textarea id="image-description" placeholder="Add details about this artwork..."></textarea>
+                    </div>
+
+                    <button class="btn-primary" style="width: 100%; padding: 1rem;" onclick="uploadMedia()">
+                        UPLOAD & SAVE
+                    </button>
+                </div>
+
+                <!-- MANAGE GALLERY TAB -->
+                <div class="admin-section">
+                    <h3 style="margin-bottom: 1rem; color: var(--dark-text);">Manage Tattoo & Piercing Gallery</h3>
+                    
+                    <div class="form-group">
+                        <label>Filter by Category</label>
+                        <select onchange="filterMediaBy(this.value)">
+                            <option value="all">All Images</option>
+                            <option value="tattoo">Tattoos Only</option>
+                            <option value="piercing">Piercings Only</option>
+                        </select>
+                    </div>
+
+                    <div class="media-list" id="gallery-media-list">
+                        <p style="text-align: center; color: var(--text-muted);">No images yet. Upload one to get started.</p>
+                    </div>
+                </div>
+
+                <!-- MANAGE TEAM TAB -->
+                <div class="admin-section">
+                    <h3 style="margin-bottom: 1rem; color: var(--dark-text);">Manage Team Members</h3>
+                    
+                    <div class="form-group">
+                        <label>Filter by Role</label>
+                        <select onchange="filterMediaBy(this.value, 'team')">
+                            <option value="all">All Team Members</option>
+                            <option value="team-artist">Artists</option>
+                            <option value="team-piercer">Piercers</option>
+                        </select>
+                    </div>
+
+                    <div class="media-list" id="team-media-list">
+                        <p style="text-align: center; color: var(--text-muted);">No team members yet. Upload photos to add them.</p>
+                    </div>
+                </div>
+
+                <!-- SETTINGS TAB -->
+                <div class="admin-section">
+                    <h3 style="margin-bottom: 1rem; color: var(--dark-text);">Admin Settings</h3>
+                    
+                    <div class="form-group">
+                        <label>Admin Password</label>
+                        <input type="password" id="current-pwd" placeholder="Current password">
+                    </div>
+
+                    <div class="form-group">
+                        <label>New Password</label>
+                        <input type="password" id="new-pwd" placeholder="New password (min 6 chars)">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Confirm New Password</label>
+                        <input type="password" id="confirm-pwd" placeholder="Confirm password">
+                    </div>
+
+                    <button class="btn-primary" style="width: 100%; padding: 1rem; margin-bottom: 1.5rem;" onclick="updatePassword()">
+                        CHANGE PASSWORD
+                    </button>
+
+                    <hr style="border: none; border-top: 1px solid var(--border-color); margin: 1.5rem 0;">
+
+                    <h4 style="color: var(--dark-text); margin-bottom: 1rem;">Export & Import</h4>
+
+                    <button class="btn-primary" style="width: 100%; padding: 0.75rem; margin-bottom: 0.75rem; background: var(--success);" onclick="exportData()">
+                        📥 EXPORT ALL DATA
+                    </button>
+
+                    <button class="btn-primary" style="width: 100%; padding: 0.75rem; background: var(--warning);" onclick="importDataPrompt()">
+                        📤 IMPORT DATA
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <main>
+        <!-- HOME PAGE -->
+        <div class="page active" id="home-page">
+            <div class="hero">
+                <div class="hero-content">
+                    <h1>OM TATTOO SHOP<br><span class="highlight">Ink That Speaks Your Story</span></h1>
+                    <p>12+ years of expertise. 1500+ tattoos. 2000+ piercings. Pondicherry's most trusted studio.</p>
+                </div>
+            </div>
+
+            <section class="portfolio">
+                <div class="section-container">
+                    <div class="section-header">
+                        <h2>Our Masterworks</h2>
+                        <p>Gallery of our finest tattoos and piercings</p>
+                    </div>
+                    <div class="gallery-grid" id="main-gallery"></div>
+                </div>
+            </section>
+
+            <section>
+                <div class="section-container">
+                    <div class="section-header">
+                        <h2>Meet Our Artists</h2>
+                        <p>Experienced professionals dedicated to your vision</p>
+                    </div>
+                    <div class="gallery-grid" id="team-gallery"></div>
+                </div>
+            </section>
+        </div>
+
+        <!-- BOOKING PAGE -->
+        <div class="page" id="booking-page">
+            <section style="background: var(--dark-bg);">
+                <div class="section-container">
+                    <div class="section-header">
+                        <h2>Secure Your Appointment</h2>
+                        <p>Book your next tattoo or piercing session</p>
+                    </div>
+
+                    <div style="max-width: 600px; margin: 0 auto; background: var(--dark-card); border: 1px solid var(--border-color); padding: 2rem; border-radius: 0.25rem;">
+                        <form id="booking-form" onsubmit="submitBooking(event)">
+                            <div class="form-group">
+                                <label>Full Name *</label>
+                                <input type="text" name="fullName" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Phone Number *</label>
+                                <input type="tel" name="phone" placeholder="+91" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Email *</label>
+                                <input type="email" name="email" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Preferred Date *</label>
+                                <input type="date" name="date" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Additional Notes</label>
+                                <textarea name="notes" placeholder="Tell us about your design..."></textarea>
+                            </div>
+
+                            <button type="submit" class="btn-primary" style="width: 100%; padding: 1rem;">
+                                CONFIRM BOOKING
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- ABOUT PAGE -->
+        <div class="page" id="about-page">
+            <section style="background: var(--dark-bg-secondary);">
+                <div class="section-container">
+                    <div class="section-header">
+                        <h2>About OM TATTOO SHOP</h2>
+                        <p>12+ years of professional excellence</p>
+                    </div>
+
+                    <div style="max-width: 800px; margin: 0 auto;">
+                        <p style="color: var(--text-secondary); line-height: 1.8; margin-bottom: 1.5rem;">
+                            Founded in the vibrant streets of Mudaliarpet, Pondicherry, OM TATTOO SHOP emerged from a singular vision: to elevate tattoo artistry to a level of uncompromising professionalism. What began as an intimate studio has evolved into the region's premier destination for bespoke body art.
+                        </p>
+
+                        <p style="color: var(--text-secondary); line-height: 1.8;">
+                            Our philosophy is rooted in the synthesis of creative rebellion and clinical precision. Every line drawn is a testament to our dedication to the craft and the trust our clients place in us. We maintain hospital-grade sterilization protocols, use single-use needles, and prioritize your safety above all else.
+                        </p>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-copyright">
+            © 2024 OM TATTOO SHOP | MUDALIARPET, PONDICHERRY | +91 98430 96955
+        </div>
+    </footer>
+
+    <script>
+        // ===== CONFIGURATION =====
+        const ADMIN_PASSWORD = "admin123";
+
+        // ===== STATE MANAGEMENT =====
+        let adminUnlocked = false;
+        let selectedCategory = 'tattoo';
+        let mediaStorage = JSON.parse(localStorage.getItem('media-gallery')) || {};
+
+        // ===== SECURITY HELPERS =====
+        function escapeHTML(str) {
+            if (!str) return '';
+            return String(str).replace(/[&<>"']/g, function(match) {
+                const escapeMap = {
+                    '&': '&amp;',
+                    '<': '&lt;',
+                    '>': '&gt;',
+                    '"': '&quot;',
+                    "'": '&#39;'
+                };
+                return escapeMap[match];
+             });
+        }
+
+        // ===== PAGE NAVIGATION =====
+        function goToPage(pageId) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(pageId + '-page').classList.add('active');
+            
+            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+            document.querySelector(`[onclick="goToPage('${pageId}')"]`)?.classList.add('active');
+            
+            window.scrollTo(0, 0);
+        }
+
+        // ===== ADMIN PANEL =====
+        const BACKEND_URL = "https://tattoo-backend-m0bk.onrender.com"; 
+
+        async function toggleAdmin() {
+            const modal = document.getElementById('admin-modal');
+            
+            // If already logged in, just open/close the menu
+            if (adminUnlocked) {
+                modal.classList.toggle('active');
+                return;
+            }
+
+            const pwd = prompt('Enter admin password:');
+            if (!pwd) return;
+
+            try {
+                const response = await fetch(`${BACKEND_URL}/api/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ password: pwd })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    adminUnlocked = true;
+                    // Save the token so we can prove we are logged in when uploading images
+                    localStorage.setItem('adminToken', data.token); 
+                    modal.classList.add('active');
+                    loadMediaList();
+                } else {
+                    alert('Incorrect password');
+                }
+            } catch (err) {
+                alert('Cannot connect to server. Is Node.js running?');
+            }
+        }
+
+        function switchAdminTab(index) {
+            document.querySelectorAll('.admin-tab').forEach((t, i) => {
+                t.classList.toggle('active', i === index);
+            });
+            document.querySelectorAll('.admin-section').forEach((s, i) => {
+                s.classList.toggle('active', i === index);
+            });
+
+            if (index === 1) {
+                loadMediaList('all', 'gallery');
+            } else if (index === 2) {
+                loadMediaList('all', 'team');
+            }
+        }
+
+        // ===== CATEGORY SELECTION =====
+        function selectCategory(btn, category) {
+            document.querySelectorAll('.category-option').forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
+            selectedCategory = category;
+            document.getElementById('selected-category').value = category;
+        }
+
+        // ===== FILE UPLOAD =====
+        function handleDragOver(e) {
+            e.preventDefault();
+            e.currentTarget.classList.add('dragover');
+        }
+
+        function handleDragLeave(e) {
+            e.currentTarget.classList.remove('dragover');
+        }
+
+        function handleDrop(e) {
+            e.preventDefault();
+            e.currentTarget.classList.remove('dragover');
+            
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                handleFileSelect({ target: { files } });
+            }
+        }
+
+        function handleFileSelect(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            // VALIDATE FILE SIZE (5MB max)
+            if (file.size > 5 * 1024 * 1024) {
+                alert('File size must be less than 5MB');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                const img = document.getElementById('preview-image');
+                img.src = event.target.result;
+                document.getElementById('preview-container').style.display = 'block';
+                
+                // Store base64 data
+                img.dataset.base64 = event.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function removePreview() {
+            document.getElementById('preview-container').style.display = 'none';
+            document.getElementById('file-input').value = '';
+        }
+
+        // ===== UPLOAD MEDIA =====
+        async function uploadMedia() {
+            const imageBase64 = document.getElementById('preview-image').dataset.base64;
+            if (!imageBase64) return alert('Please select an image first');
+
+            const mediaData = {
+                id: Date.now(),
+                title: document.getElementById('image-title').value || 'Untitled',
+                description: document.getElementById('image-description').value || '',
+                category: document.getElementById('selected-category').value,
+                image: imageBase64,
+                uploadedAt: new Date().toLocaleString('en-IN')
+            };
+
+            const token = localStorage.getItem('adminToken'); // Get the VIP wristband
+
+            try {
+                const response = await fetch(`${BACKEND_URL}/api/gallery`, {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Authorization': token // Show the wristband to the server
+                    },
+                    body: JSON.stringify(mediaData)
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    alert('✓ Image uploaded successfully!');
+                    // Clear the form
+                    removePreview();
+                    document.getElementById('image-title').value = '';
+                    document.getElementById('image-description').value = '';
+                } else {
+                    alert('Upload failed: ' + result.message);
+                }
+            } catch (err) {
+                alert('Failed to connect to the server.');
+            }
+        }
+
+        // ===== LOAD GALLERIES =====
+        function loadGalleries() {
+            const mainGallery = document.getElementById('main-gallery');
+            const teamGallery = document.getElementById('team-gallery');
+
+            mainGallery.innerHTML = '';
+            teamGallery.innerHTML = '';
+
+            // LOAD TATTOO & PIERCING GALLERY
+            ['tattoo', 'piercing'].forEach(cat => {
+                if (mediaStorage[cat]) {
+                    mediaStorage[cat].forEach(media => {
+                        const item = createGalleryItem(media);
+                        mainGallery.appendChild(item);
+                    });
+                }
+            });
+
+            // LOAD TEAM GALLERY
+            if (mediaStorage['team']) {
+                mediaStorage['team'].forEach(media => {
+                    const item = createGalleryItem(media, true);
+                    teamGallery.appendChild(item);
+                });
+            }
+
+            if (mainGallery.children.length === 0) {
+                mainGallery.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: var(--text-muted);">No images in gallery yet</p>';
+            }
+
+            if (teamGallery.children.length === 0) {
+                teamGallery.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: var(--text-muted);">No team members yet</p>';
+            }
+        }
+
+        function createGalleryItem(media, isTeam = false) {
+            const div = document.createElement('div');
+            div.className = 'gallery-item';
+    
+            // Sanitize user inputs to prevent XSS
+            const safeTitle = escapeHTML(media.title);
+            const safeDesc = escapeHTML(media.description);
+            
+            div.innerHTML = `
+                <img src="${media.image}" alt="${safeTitle}">
+                <div class="gallery-item-overlay">
+                    <div class="gallery-label">${safeTitle}</div>
+                    ${safeDesc ? `<p style="font-size: 0.85rem; margin-top: 0.5rem; opacity: 0.9;">${safeDesc}</p>` : ''}
+                </div>
+            `;
+            return div;
+        }
+
+        // ===== MANAGE MEDIA =====
+        function loadMediaList(filter = 'all', type = 'gallery') {
+            const listId = type === 'gallery' ? 'gallery-media-list' : 'team-media-list';
+            const list = document.getElementById(listId);
+            list.innerHTML = '';
+
+            let allMedia = [];
+
+            if (type === 'gallery') {
+                if (filter === 'all') {
+                    ['tattoo', 'piercing'].forEach(cat => {
+                        if (mediaStorage[cat]) {
+                            allMedia.push(...mediaStorage[cat]);
+                        }
+                    });
+                } else {
+                    if (mediaStorage[filter]) {
+                        allMedia = mediaStorage[filter];
+                    }
+                }
+            } else {
+                if (mediaStorage['team']) {
+                    allMedia = mediaStorage['team'];
+                }
+            }
+
+            if (allMedia.length === 0) {
+                list.innerHTML = '<p style="text-align: center; color: var(--text-muted);">No images found</p>';
+                return;
+            }
+
+            allMedia.forEach(media => {
+                const card = document.createElement('div');
+                card.className = 'media-card';
+                
+                // Sanitize inputs to prevent XSS
+                const safeTitle = escapeHTML(media.title);
+                const safeDesc = escapeHTML(media.description);
+                const safeCategory = escapeHTML(media.category);
+                
+                card.innerHTML = `
+                    <img src="${media.image}" alt="${safeTitle}" class="media-thumbnail">
+                    <div class="media-info">
+                        <div>
+                            <div class="media-name">${safeTitle}</div>
+                            <div class="media-category">${safeCategory}</div>
+                            <div class="media-description">${safeDesc}</div>
+                        </div>
+                        <div class="media-actions">
+                            <button class="btn-small btn-edit" onclick="editMedia(${media.id}, '${safeCategory}')">EDIT</button>
+                            <button class="btn-small btn-delete" onclick="deleteMedia(${media.id}, '${safeCategory}')">DELETE</button>
+                        </div>
+                    </div>
+                `;
+                list.appendChild(card);
+            });
+        }
+
+        function filterMediaBy(filter, type = 'gallery') {
+            loadMediaList(filter, type);
+        }
+
+        function editMedia(id, category) {
+            const media = mediaStorage[category].find(m => m.id === id);
+            if (!media) return;
+
+            const newTitle = prompt('Edit title:', media.title);
+            if (newTitle === null) return;
+
+            const newDesc = prompt('Edit description:', media.description);
+            if (newDesc === null) return;
+
+            media.title = newTitle;
+            media.description = newDesc;
+
+            localStorage.setItem('media-gallery', JSON.stringify(mediaStorage));
+            loadMediaList();
+            loadGalleries();
+            alert('✓ Updated successfully!');
+        }
+
+        function deleteMedia(id, category) {
+            if (!confirm('Delete this image?')) return;
+
+            mediaStorage[category] = mediaStorage[category].filter(m => m.id !== id);
+            localStorage.setItem('media-gallery', JSON.stringify(mediaStorage));
+            
+            loadMediaList();
+            loadGalleries();
+            alert('✓ Deleted successfully!');
+        }
+
+        // ===== PASSWORD MANAGEMENT =====
+        function updatePassword() {
+            const current = document.getElementById('current-pwd').value;
+            const newPwd = document.getElementById('new-pwd').value;
+            const confirm = document.getElementById('confirm-pwd').value;
+
+            if (current !== ADMIN_PASSWORD) {
+                alert('Current password is incorrect');
+                return;
+            }
+
+            if (newPwd.length < 6) {
+                alert('Password must be at least 6 characters');
+                return;
+            }
+
+            if (newPwd !== confirm) {
+                alert('Passwords do not match');
+                return;
+            }
+
+            // Store new password (WARNING: NOT SECURE FOR PRODUCTION)
+            localStorage.setItem('admin-pwd', newPwd);
+            adminUnlocked = false;
+            document.getElementById('admin-modal').classList.remove('active');
+            alert('✓ Password changed! Please log in again.');
+        }
+
+        // ===== DATA EXPORT/IMPORT =====
+        function exportData() {
+            const data = {
+                mediaGallery: mediaStorage,
+                exportDate: new Date().toLocaleString('en-IN')
+            };
+
+            const json = JSON.stringify(data, null, 2);
+            const blob = new Blob([json], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `om-tattoo-backup-${Date.now()}.json`;
+            a.click();
+        }
+
+        function importDataPrompt() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            input.onchange = function(e) {
+                const file = e.target.files[0];
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    try {
+                        const data = JSON.parse(event.target.result);
+                        mediaStorage = data.mediaGallery || {};
+                        localStorage.setItem('media-gallery', JSON.stringify(mediaStorage));
+                        loadMediaList();
+                        loadGalleries();
+                        alert('✓ Data imported successfully!');
+                    } catch (err) {
+                        alert('Error: Invalid backup file');
+                    }
+                };
+                reader.readAsText(file);
+            };
+            input.click();
+        }
+
+        // ===== BOOKING FORM =====
+        async function submitBooking(e) {
+            e.preventDefault(); // Stop the page from reloading
+            
+            // Put your Google Apps Script URL here!
+            const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyb5bkH-3O9OGzAheF70pNiFEb3UXgFiKdXUI4Qz5J6tsxNyI-TYCrH4tkmGU6B7a8/exec"; 
+            
+            const formData = new FormData(e.target);
+            const data = Object.fromEntries(formData.entries());
+
+            // Show a loading message (optional but good for user experience)
+            const btn = e.target.querySelector('button');
+            const originalText = btn.innerText;
+            btn.innerText = "SENDING...";
+            btn.disabled = true;
+
+            try {
+                await fetch(GOOGLE_SCRIPT_URL, {
+                    method: 'POST',
+                    body: JSON.stringify(data),
+                });
+                
+                alert('✓ Booking request received! We will contact you shortly.');
+                e.target.reset();
+                goToPage('home');
+            } catch (error) {
+                alert('Oops! Something went wrong. Please call us to book.');
+            } finally {
+                btn.innerText = originalText;
+                btn.disabled = false;
+            }
+        }
+
+        // ===== INITIALIZATION =====
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedPwd = localStorage.getItem('admin-pwd');
+            if (savedPwd) {
+                // Use saved password for next login
+            }
+
+            loadGalleries();
+
+            // SET MIN DATE FOR BOOKING
+            const tomorrow = new Date();
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            document.querySelector('input[type="date"]').min = tomorrow.toISOString().split('T')[0];
+        });
+    </script>
+</body>
+</html>
